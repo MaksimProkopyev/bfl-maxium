@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Отчёт по слайд‑паку — галерея и таблица</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{
+    --ink: #0b1220; --muted:#64748b; --bg:#ffffff; --line:#e5e7eb;
+    --radius:16px; --gap: clamp(12px, 2.5vw, 20px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0b1220; --ink:#f8fafc; --line:#1f2937; --muted:#9aa4b2; }
+  }
+  *{ box-sizing: border-box }
+  body{ margin:0; font: 14px/1.6 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--ink); }
+  header{ position: sticky; top:0; z-index:10; backdrop-filter: blur(8px); background: color-mix(in oklab, var(--bg), transparent 20%); border-bottom:1px solid var(--line); }
+  .wrap{ max-width:1100px; margin:0 auto; padding: 14px var(--gap); }
+  h1{ font-size: clamp(18px, 2.4vw, 26px); margin:0 0 6px; }
+  .bar{ display:grid; gap:12px; grid-template-columns: 1fr auto auto; align-items:center; }
+  .pill{ display:flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--line); border-radius: 999px; background: color-mix(in oklab, var(--bg), white 6%); }
+  input[type="search"]{ all:unset; width: 100%; }
+  select, button{ border:1px solid var(--line); background: color-mix(in oklab, var(--bg), white 6%); color:var(--ink); padding:8px 12px; border-radius: 10px; cursor:pointer; }
+  main{ max-width:1100px; margin: 0 auto; padding: var(--gap); }
+  .tabs{ display:flex; gap:8px; margin-bottom:12px; }
+  .tabs button[aria-selected="true"]{ outline:2px solid #60a5fa; }
+  .grid{ display:grid; gap: var(--gap); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .card{ border:1px solid var(--line); border-radius: var(--radius); overflow:hidden; background: color-mix(in oklab, var(--bg), white 6%); }
+  .thumb{ aspect-ratio: 4/3; display:grid; place-items:center; background: color-mix(in oklab, var(--bg), black 4%); }
+  .thumb img{ width:100%; height:100%; object-fit: contain; }
+  .meta{ padding:12px; display:grid; gap:6px; font-size: 12px; color: var(--muted); }
+  .meta strong{ color: var(--ink); }
+  .bad{ color:#ef4444; }
+  table{ width:100%; border-collapse: collapse; border:1px solid var(--line); overflow:auto; border-radius: var(--radius); }
+  thead th{ position: sticky; top:0; background: color-mix(in oklab, var(--bg), white 8%); text-align:left; font-weight:600; }
+  th, td{ padding:10px 12px; border-bottom:1px solid var(--line); font-size: 12px; }
+  .empty{ padding: 20px; border:1px dashed var(--line); border-radius: var(--radius); text-align:center; color: var(--muted); }
+  footer{ padding: var(--gap); color:var(--muted); text-align:center; }
+  a.btn{ text-decoration:none; border:1px solid var(--line); padding:8px 12px; border-radius: 10px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Отчёт по слайд‑паку</h1>
+    <div class="bar">
+      <label class="pill" style="min-width:240px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="2" d="m21 21-4.35-4.35m1.1-4.4A7.35 7.35 0 1 1 10.4 4.9a7.35 7.35 0 0 1 7.35 7.35Z"/></svg>
+        <input id="q" type="search" placeholder="Поиск по имени/типу…" />
+      </label>
+      <select id="ext">
+        <option value="">Все расширения</option>
+      </select>
+      <div class="tabs">
+        <button id="tabGrid" aria-selected="true">Галерея</button>
+        <button id="tabTable" aria-selected="false">Таблица</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="gallery" hidden></section>
+  <section id="table"></section>
+</main>
+
+<footer>
+  <div>Этот индекс читает <code>report/slides_report.json</code> и показывает превью, если есть миниатюры.</div>
+</footer>
+
+<script>
+async function loadData(){
+  const r = await fetch('report/slides_report.json');
+  if(!r.ok){ 
+    document.querySelector('main').innerHTML = '<p class="empty">Не найден файл report/slides_report.json</p>';
+    return;
+  }
+  const data = await r.json();
+  const items = data.items || [];
+  const optimized = data.optimized || [];
+  const thumbMap = {};
+  for (const o of optimized){
+    if(o.thumb_webp) thumbMap[o.source] = o.thumb_webp;
+  }
+  // Fill extension filter
+  const exts = Array.from(new Set(items.map(x=>x.ext))).filter(Boolean).sort();
+  const extSel = document.getElementById('ext');
+  for(const e of exts){
+    const opt = document.createElement('option');
+    opt.value = e; opt.textContent = e;
+    extSel.appendChild(opt);
+  }
+
+  // Renderers
+  const gallery = document.getElementById('gallery');
+  const table = document.getElementById('table');
+  const q = document.getElementById('q');
+
+  function match(x){
+    const text = (q.value || '').toLowerCase();
+    const byExt = extSel.value;
+    if(byExt && x.ext !== byExt) return false;
+    if(!text) return true;
+    return (x.path + ' ' + (x.aspect||'') + ' ' + (x.mode||'') + ' ' + (x.ext||'')).toLowerCase().includes(text);
+  }
+
+  function renderGallery(list){
+    if(!list.length){
+      gallery.innerHTML = '<div class="empty">Нет изображений с превью. Загрузите растровые файлы, чтобы появились миниатюры.</div>';
+      return;
+    }
+    const cards = list.map(x=>{
+      const t = thumbMap[x.path];
+      return `<article class="card">
+        <div class="thumb">${t ? `<img loading="lazy" src="${t}" alt="${x.path}">` : '<span>нет превью</span>'}</div>
+        <div class="meta">
+          <div><strong>${x.path}</strong></div>
+          <div>${x.width||'—'}×${x.height||'—'} · ${x.aspect||'—'}</div>
+          <div>${x.ext} · ${(x.bytes/1024).toFixed(1)} KB ${x.error ? `· <span class="bad">${x.error}</span>`: ''}</div>
+        </div>
+      </article>`;
+    }).join('');
+    gallery.innerHTML = `<div class="grid">${cards}</div>`;
+  }
+
+  function renderTable(list){
+    if(!list.length){
+      table.innerHTML = '<div class="empty">Ничего не найдено по фильтрам</div>';
+      return;
+    }
+    const rows = list.map(x=>`<tr>
+      <td>${x.path}</td>
+      <td>${x.ext||''}</td>
+      <td>${(x.bytes/1024).toFixed(1)} KB</td>
+      <td>${x.is_image ? 'да' : '—'}</td>
+      <td>${x.width||''}</td>
+      <td>${x.height||''}</td>
+      <td>${x.aspect||''}</td>
+      <td>${x.mode||''}</td>
+      <td>${x.duplicate_set||''}</td>
+      <td>${x.error ? `<span class="bad">${x.error}</span>` : ''}</td>
+    </tr>`).join('');
+    table.innerHTML = `<div style="overflow:auto"><table>
+      <thead><tr><th>Путь</th><th>Расш.</th><th>Размер</th><th>Изобр.</th><th>W</th><th>H</th><th>Аспект</th><th>Режим</th><th>Дубликат</th><th>Ошибка</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+  }
+
+  function apply(){
+    const filtered = items.filter(match);
+    const galleryItems = filtered.filter(x=>x.is_image);
+    renderGallery(galleryItems);
+    renderTable(filtered);
+  }
+
+  // Tabs
+  const tabGrid = document.getElementById('tabGrid');
+  const tabTable = document.getElementById('tabTable');
+  function showGrid(){
+    tabGrid.setAttribute('aria-selected', 'true');
+    tabTable.setAttribute('aria-selected', 'false');
+    gallery.hidden = false; table.hidden = true;
+  }
+  function showTable(){
+    tabGrid.setAttribute('aria-selected', 'false');
+    tabTable.setAttribute('aria-selected', 'true');
+    gallery.hidden = true; table.hidden = false;
+  }
+  tabGrid.addEventListener('click', showGrid);
+  tabTable.addEventListener('click', showTable);
+  // default = Grid
+  showGrid();
+
+  q.addEventListener('input', apply);
+  extSel.addEventListener('change', apply);
+
+  apply();
+}
+loadData();
+</script>
+</body>
+</html>

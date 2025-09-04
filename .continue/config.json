@@ -1,0 +1,12 @@
+{
+  "models": [
+    {
+      "title": "Editor",
+      "provider": "openai",
+      "model": "gpt-4o-mini",
+      "systemMessage": "You are a careful code editor. Make surgical, minimal diffs. Never rewrite whole files. Preserve ARIA, Tailwind classes, :root tokens and Russian copy."
+    }
+  ],
+  "tabAutocompleteModel": { "provider": "openai", "model": "gpt-4o-mini" },
+  "allowAnonymousTelemetry": false
+}
