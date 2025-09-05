@@ -1,182 +1,1126 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="light no-swiper">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Отчёт по слайд‑паку — галерея и таблица</title>
-<meta name="color-scheme" content="light dark">
-<style>
-  :root{
-    --ink: #0b1220; --muted:#64748b; --bg:#ffffff; --line:#e5e7eb;
-    --radius:16px; --gap: clamp(12px, 2.5vw, 20px);
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ваше Банкротство — списание долгов законно</title>
+  <meta name="description" content="Списание долгов законно. ЛК, поиск по странице, карта РФ (статическая), блог новостей. Чистый HTML + Tailwind + JS." />
+  <meta name="theme-color" content="#0A2A6A"/>
+
+  <!-- Canonical / robots -->
+  <link rel="canonical" href="https://example.com/" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Ваше Банкротство — списание долгов законно" />
+  <meta property="og:description" content="Диагностика за 30 сек, работа по РФ, конфиденциально." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://example.com/" />
+  <meta property="og:image" content="https://picsum.photos/1200/630" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="ru_RU" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ваше Банкротство — списание долгов законно" />
+  <meta name="twitter:description" content="Диагностика за 30 сек, работа по РФ, конфиденциально." />
+  <meta name="twitter:image" content="https://picsum.photos/1200/630" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" />
+
+  <!-- Tailwind (scoped, no preflight, important: #app) -->
+  <script>window.tailwind={config:{darkMode:'class',corePlugins:{preflight:false},important:'#app'}};</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography&display=swap" defer></script>
+
+  <!-- Swiper CSS (hero slider) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+  <!-- Inter Variable -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+
+  <!-- Schema.org Organization/LocalBusiness -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": ["Organization","LegalService","LocalBusiness"],
+    "name": "Ваше Банкротство",
+    "url": "https://example.com/",
+    "logo": "https://example.com/logo-512.png",
+    "image": "https://picsum.photos/1200/630",
+    "telephone": "+7-800-101-42-03",
+    "email": "info@example.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Москва",
+      "streetAddress": "ул. Примерная, 1",
+      "addressCountry": "RU"
+    },
+    "openingHours": "Mo-Fr 10:00-19:00",
+    "areaServed": "RU",
+    "sameAs": [
+      "https://vk.com/",
+      "https://t.me/",
+      "https://wa.me/"
+    ]
   }
-  @media (prefers-color-scheme: dark){
-    :root{ --bg:#0b1220; --ink:#f8fafc; --line:#1f2937; --muted:#9aa4b2; }
-  }
-  *{ box-sizing: border-box }
-  body{ margin:0; font: 14px/1.6 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--ink); }
-  header{ position: sticky; top:0; z-index:10; backdrop-filter: blur(8px); background: color-mix(in oklab, var(--bg), transparent 20%); border-bottom:1px solid var(--line); }
-  .wrap{ max-width:1100px; margin:0 auto; padding: 14px var(--gap); }
-  h1{ font-size: clamp(18px, 2.4vw, 26px); margin:0 0 6px; }
-  .bar{ display:grid; gap:12px; grid-template-columns: 1fr auto auto; align-items:center; }
-  .pill{ display:flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--line); border-radius: 999px; background: color-mix(in oklab, var(--bg), white 6%); }
-  input[type="search"]{ all:unset; width: 100%; }
-  select, button{ border:1px solid var(--line); background: color-mix(in oklab, var(--bg), white 6%); color:var(--ink); padding:8px 12px; border-radius: 10px; cursor:pointer; }
-  main{ max-width:1100px; margin: 0 auto; padding: var(--gap); }
-  .tabs{ display:flex; gap:8px; margin-bottom:12px; }
-  .tabs button[aria-selected="true"]{ outline:2px solid #60a5fa; }
-  .grid{ display:grid; gap: var(--gap); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
-  .card{ border:1px solid var(--line); border-radius: var(--radius); overflow:hidden; background: color-mix(in oklab, var(--bg), white 6%); }
-  .thumb{ aspect-ratio: 4/3; display:grid; place-items:center; background: color-mix(in oklab, var(--bg), black 4%); }
-  .thumb img{ width:100%; height:100%; object-fit: contain; }
-  .meta{ padding:12px; display:grid; gap:6px; font-size: 12px; color: var(--muted); }
-  .meta strong{ color: var(--ink); }
-  .bad{ color:#ef4444; }
-  table{ width:100%; border-collapse: collapse; border:1px solid var(--line); overflow:auto; border-radius: var(--radius); }
-  thead th{ position: sticky; top:0; background: color-mix(in oklab, var(--bg), white 8%); text-align:left; font-weight:600; }
-  th, td{ padding:10px 12px; border-bottom:1px solid var(--line); font-size: 12px; }
-  .empty{ padding: 20px; border:1px dashed var(--line); border-radius: var(--radius); text-align:center; color: var(--muted); }
-  footer{ padding: var(--gap); color:var(--muted); text-align:center; }
-  a.btn{ text-decoration:none; border:1px solid var(--line); padding:8px 12px; border-radius: 10px; }
-</style>
+  </script>
+
+  <!-- Design tokens -->
+  <style>
+    :root{
+      --color-navy:#0A2A6A; --color-blue:#2B4D8F; --color-yellow:#FFB000; --color-white:#FFFFFF; --color-gray-100:#E6E6E6;
+      --brand:var(--color-yellow); --brand-2:#FFC44D; --accent:#2B4D8F;
+      --copy:#0b1220; --muted:#334155;
+      --section-pad: clamp(2.5rem, 3vw + 1.5rem, 4.5rem);
+      --radius: 1rem; --radius-lg: 1.25rem;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,.08); --shadow-md: 0 10px 28px rgba(2,6,23,.12);
+      --topbar-h:48px; --hdr-h:72px; --hdr-h-sticky:56px; --hdr-offset:0px;
+    }
+    @media (min-width:1280px){ :root{ --hdr-h:72px; --hdr-h-sticky:56px } }
+    @media (max-width:1279px){ :root{ --hdr-h:64px; --hdr-h-sticky:56px } }
+    @media (max-width:767px){  :root{ --hdr-h:56px; --hdr-h-sticky:56px } }
+    @media (min-width:768px){ :root{ --hdr-offset: calc(var(--topbar-h) + env(safe-area-inset-top, 0px)); } }
+
+    html{ scroll-behavior:smooth; font-synthesis-weight:none }
+    body{ color:var(--copy); background:#fff; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"; font-optical-sizing:auto }
+    .dark body{ background:#0b1220; color:#e5e7eb }
+    section{ padding-block:var(--section-pad) }
+    p{ color:var(--muted) }
+    [id]{ scroll-margin-top: calc(var(--hdr-h) + var(--hdr-offset) + 16px) }
+    h1,h2,h3{ text-wrap: balance } p,li{ text-wrap: pretty }
+    ::selection{ background: color-mix(in oklab, var(--brand) 20%, transparent) }
+    .band{ background:#fff }
+    .section-divider{ border-top:0; border-bottom:0 }
+    .surface, .surface-strong{ border-radius:var(--radius-lg); position:relative; background:#fff; border:1px solid #e2e8f0; box-shadow:none }
+    .surface-strong{ box-shadow:none }
+
+    .hdr{ background:transparent; border-bottom:1px solid transparent; transition:background .18s, border-color .18s, box-shadow .18s, backdrop-filter .18s }
+    .hdr--solid{ background:#fff; border-color:#e2e8f0; box-shadow:none; backdrop-filter:none }
+    .nav-link{ position:relative; font-weight:600; color:#334155; text-decoration:none }
+    .nav-link::after{ content:""; position:absolute; left:0; right:100%; bottom:-8px; height:2px; border-radius:1px; background:linear-gradient(90deg,var(--color-yellow),#FFC44D); transition:right .25s ease }
+    .nav-link:hover{ color:#0b1220 } .nav-link:hover::after{ right:0 } .nav-link[aria-current="true"]::after{ right:0 } .nav-link:focus-visible{ outline:2px solid var(--color-yellow); outline-offset:2px }
+
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:.5rem; background:#fff; color:#0b1220; border:1px solid #e2e8f0; border-radius:.9rem; min-height:44px; padding:.7rem 1rem; font-weight:700; letter-spacing:.15px; transition:transform .12s, background .15s, border-color .15s; box-shadow:none }
+    .btn:hover{ background:#f8fafc; border-color:#cbd5e1; transform:translateY(-1px) }
+/* Focus rings for keyboard users */
+.btn:focus-visible, .btn-primary:focus-visible, .btn-ghost:focus-visible, .btn-navy:focus-visible{ outline:3px solid #FFB000; outline-offset:2px }
+    .btn-primary{ display:inline-flex; align-items:center; justify-content:center; background:var(--color-yellow); color:var(--color-navy); border:1px solid rgba(2,6,23,.06); border-radius:.95rem; min-height:48px; padding:.9rem 1.1rem; font-weight:700; letter-spacing:.15px; transition:transform .12s, background .15s, filter .15s; box-shadow:none }
+    .btn-primary:hover{ filter:brightness(.96); transform:translateY(-1px) }
+    .btn-ghost{ background:#fff; border:1px solid #e2e8f0; color:#0b1220; border-radius:.9rem; min-height:44px; padding:.7rem 1rem; font-weight:700; transition:transform .12s, background .15s, border-color .15s; box-shadow:none }
+    .btn-ghost:hover{ background:#f8fafc; border-color:#cbd5e1; transform:translateY(-1px) }
+    .btn-navy{display:inline-flex;align-items:center;justify-content:center;background:var(--color-navy);color:#fff;border:1px solid rgba(2,6,23,.06);border-radius:.9rem;min-height:44px;padding:.7rem 1rem;font-weight:700;letter-spacing:.15px;box-shadow:none}
+
+    .search{ position:relative }
+    .search input{ width:220px; padding:.6rem .8rem; border-radius:.75rem; border:1px solid #e2e8f0 }
+    .search-panel{ position:absolute; top:calc(100% + 8px); right:0; min-width:320px; max-width:420px; background:#fff; border:1px solid #e2e8f0; border-radius:.75rem; box-shadow:0 16px 40px -24px rgba(2,6,23,.18); padding:.5rem; z-index:60; display:none }
+    .search-panel[aria-hidden="false"]{ display:block }
+    .search-item{ display:flex; gap:.5rem; align-items:flex-start; padding:.5rem; border-radius:.5rem; cursor:pointer }
+    .search-item[aria-selected="true"], .search-item:hover{ background:#f8fafc }
+    .search-item .t{ font-weight:600 } .search-item .s{ font-size:.85rem; color:#475569 }
+
+    .rfmap { touch-action: none }
+    #rfStage .region { cursor: pointer; stroke:#0b122022; stroke-width:.35; vector-effect:non-scaling-stroke; transition: fill .2s, stroke .2s, opacity .2s }
+    #rfStage .region:hover, #rfStage .region[data-active="true"]{ stroke:#0b1220; stroke-width:.6 }
+    #mapTip{ position:absolute; inset:auto auto 0 0; transform:translate(8px,-8px); background:#fff; border:1px solid #e2e8f0; border-radius:.6rem; padding:.5rem .6rem; font-size:.85rem; color:#0b1220; box-shadow:0 16px 40px -24px rgba(2,6,23,.18); pointer-events:none; z-index:20 }
+    .no-swiper .swiper-button-prev,.no-swiper .swiper-button-next,.no-swiper .swiper-pagination{ display:none }
+    .no-swiper .swiper-wrapper{ display:grid; gap:16px }
+
+    @media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important } .surface,.surface-strong{ box-shadow:none; backdrop-filter:none } }
+    .skip{position:absolute;left:12px;top:0;transform:translateY(-150%);background:var(--color-navy);color:#fff;padding:.5rem .75rem;border-radius:.5rem;z-index:110;box-shadow:var(--shadow-sm)}
+    .skip:focus,.skip:focus-visible{transform:translateY(8px)}
+    .badge-yellow{ background:#f7b21a; color:#0a1f4a; font-weight:700; border:1px solid #f1a40a }
+  </style>
 </head>
-<body>
-<header>
-  <div class="wrap">
-    <h1>Отчёт по слайд‑паку</h1>
-    <div class="bar">
-      <label class="pill" style="min-width:240px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="2" d="m21 21-4.35-4.35m1.1-4.4A7.35 7.35 0 1 1 10.4 4.9a7.35 7.35 0 0 1 7.35 7.35Z"/></svg>
-        <input id="q" type="search" placeholder="Поиск по имени/типу…" />
-      </label>
-      <select id="ext">
-        <option value="">Все расширения</option>
-      </select>
-      <div class="tabs">
-        <button id="tabGrid" aria-selected="true">Галерея</button>
-        <button id="tabTable" aria-selected="false">Таблица</button>
+<body class="antialiased">
+  <a class="skip" href="#main">Перейти к содержанию</a>
+
+  <div id="app">
+    <!-- TOPBAR -->
+    <div id="topbar" class="hidden md:block sticky top-0 z-[120] bg-white border-b border-slate-200" style="height:var(--topbar-h)">
+      <div class="wrap mx-auto max-w-7xl px-6 lg:px-10 h-full flex items-center justify-between gap-6">
+        <div class="flex items-center gap-6 min-w-0">
+          <a href="#hero" class="flex items-center gap-2 shrink-0" aria-label="На главную">
+            <span class="h-7 w-7 rounded-md" style="background:linear-gradient(45deg,var(--color-yellow),#FFC44D)" aria-hidden="true"></span>
+          </a>
+          <div class="hidden lg:flex items-center gap-6 text-[15px] text-slate-800 min-w-0">
+            <span class="tb-link truncate" title="Москва">
+              <svg viewBox="0 0 24 24" class="w-4 h-4" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/></svg>
+              <span class="truncate">Москва</span>
+            </span>
+            <a href="mailto:info@example.com" class="tb-link truncate" title="info@example.com">
+              <svg viewBox="0 0 24 24" class="w-4 h-4" aria-hidden="true"><path fill="currentColor" d="M20 4H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+              <span class="truncate">info@example.com</span>
+            </a>
+            <a href="tel:+78001014203" class="tb-link whitespace-nowrap" aria-label="Позвонить: 8 (800) 101-42-03">
+              <svg viewBox="0 0 24 24" class="w-4 h-4" aria-hidden="true"><path fill="currentColor" d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.17.38 2.37.57 3.58.57a1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1C10.07 21 3 13.93 3 5a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.22.2 2.42.57 3.58a1 1 0 0 1-.25 1.01l-2.2 2.2Z"/></svg>
+              <span>8 (800) 101-42-03</span>
+            </a>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="hidden md:flex items-center gap-3">
+            <a href="https://vk.com/" target="_blank" rel="noopener nofollow" class="p-2" aria-label="VK" title="VK" style="color:#0077FF">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 6c0-1 0-1 1-1h16c1 0 1 0 1 1v12c0 1 0 1-1 1H4c-1 0-1 0-1-1V6zm16.3 8.8c.2.3 0 .7-.3.7h-1.9c-.5 0-.9-.2-1.3-.6-.7-.6-1.3-.9-1.6-.7-.3.2-.2.8-.2 1.2v.1c0 .1-.1.2-.3.2h-1.5c-1.1 0-2.6-.7-4.1-2.2A17 17 0 0 1 4.7 9c0-.2.1-.3.3-.3H7c.2 0 .3.1.4.3.5 1.2 1.2 2.3 1.7 2.9.2.2.5.2.5-.1V9.2c0-.2 0-.3-.3-.3H8.1c-.2 0-.2-.2-.1-.3.7-1 2-1.7 3.3-1.7h.7c.2 0 .3.1.3.3v3.2c0 .3.2.4.4.2.7-.6 1.6-1.8 1.9-2.5.1-.2.2-.3.4-.3H18c.3 0 .4.2.4.4-.2.8-1.7 2.3-2.1 2.7-.2.2-.2.3 0 .5.5.4 1.7 1.2 2 1.7z"/></svg>
+            </a>
+            <a href="https://t.me/" target="_blank" rel="noopener nofollow" class="p-2" aria-label="Telegram" title="Telegram" style="color:#27A7E7">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.3 15.6 9 20c.5 0 .7-.2 1-.4l2.4-2.1 4.9 3.6c.9.5 1.6.2 1.8-.8l3.2-15.1c.3-1.2-.4-1.7-1.3-1.4L2.6 9.5C1.4 10 .4 10.6 2 11.1l5.6 1.7 13-8.2-11.3 11Z"/></svg>
+            </a>
+            <a href="https://wa.me/" target="_blank" rel="noopener nofollow" class="p-2" aria-label="WhatsApp" title="WhatsApp" style="color:#25D366">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 4.6A9.9 9.9 0 0 0 3.7 18.1L3 21l3-.7A9.9 9.9 0 1 0 20 4.6ZM7.8 18l-.2.1-1.8.4.4-1.7V16A7.2 7.2 0 1 1 16 7.2 7.1 7.1 0 0 1 7.8 18Zm8.5-4.2c-.4-.2-1.9-.9-2.1-1-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.1.1-.3.1-.5 0-1-.4-1.9-1-2.6-1.8-.2-.3-.5-.6-.7-1-.1-.2 0-.3.1-.4l.3-.4c.1-.1.1-.3 0-.5 0-.1-.6-1.5-.8-2-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.7.7-1 1.6-1 2.5 0 .3.1.7.3 1 .6 1.2 1.5 2.3 2.6 3.2 1.3 1 2.8 1.8 4.4 2.2.4.1.8.1 1.2.1.7-.1 1.5-.5 1.8-1.2.2-.4.2-.8.1-1.2-.1-.2-.3-.3-.5-.4Z"/></svg>
+            </a>
+            <a id="tbSearchBtn" href="#siteSearch" class="p-2 rounded-lg border border-slate-200 bg-white" aria-label="Поиск по странице" title="Поиск по странице">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-1.4 1.4l.3.3v.8l5 5 1.5-1.5-5-5Zm-5.5 0a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/></svg>
+            </a>
+          </div>
+          <a href="#final-cta" class="btn-navy">Бесплатная консультация</a>
+        </div>
       </div>
     </div>
-  </div>
-</header>
 
-<main>
-  <section id="gallery" hidden></section>
-  <section id="table"></section>
-</main>
-
-<footer>
-  <div>Этот индекс читает <code>report/slides_report.json</code> и показывает превью, если есть миниатюры.</div>
-</footer>
-
-<script>
-async function loadData(){
-  const r = await fetch('report/slides_report.json');
-  if(!r.ok){ 
-    document.querySelector('main').innerHTML = '<p class="empty">Не найден файл report/slides_report.json</p>';
-    return;
-  }
-  const data = await r.json();
-  const items = data.items || [];
-  const optimized = data.optimized || [];
-  const thumbMap = {};
-  for (const o of optimized){
-    if(o.thumb_webp) thumbMap[o.source] = o.thumb_webp;
-  }
-  // Fill extension filter
-  const exts = Array.from(new Set(items.map(x=>x.ext))).filter(Boolean).sort();
-  const extSel = document.getElementById('ext');
-  for(const e of exts){
-    const opt = document.createElement('option');
-    opt.value = e; opt.textContent = e;
-    extSel.appendChild(opt);
-  }
-
-  // Renderers
-  const gallery = document.getElementById('gallery');
-  const table = document.getElementById('table');
-  const q = document.getElementById('q');
-
-  function match(x){
-    const text = (q.value || '').toLowerCase();
-    const byExt = extSel.value;
-    if(byExt && x.ext !== byExt) return false;
-    if(!text) return true;
-    return (x.path + ' ' + (x.aspect||'') + ' ' + (x.mode||'') + ' ' + (x.ext||'')).toLowerCase().includes(text);
-  }
-
-  function renderGallery(list){
-    if(!list.length){
-      gallery.innerHTML = '<div class="empty">Нет изображений с превью. Загрузите растровые файлы, чтобы появились миниатюры.</div>';
-      return;
-    }
-    const cards = list.map(x=>{
-      const t = thumbMap[x.path];
-      return `<article class="card">
-        <div class="thumb">${t ? `<img loading="lazy" src="${t}" alt="${x.path}">` : '<span>нет превью</span>'}</div>
-        <div class="meta">
-          <div><strong>${x.path}</strong></div>
-          <div>${x.width||'—'}×${x.height||'—'} · ${x.aspect||'—'}</div>
-          <div>${x.ext} · ${(x.bytes/1024).toFixed(1)} KB ${x.error ? `· <span class="bad">${x.error}</span>`: ''}</div>
+    <!-- HEADER -->
+    <header class="hdr sticky top-[var(--hdr-offset)] z-[100]" id="hdr" role="banner">
+      <div class="bar mx-auto max-w-7xl px-6 lg:px-10 flex items-center justify-between" style="height:var(--hdr-h)">
+        <div class="flex items-center gap-3">
+          <span class="h-6 w-6 rounded-md" style="background:linear-gradient(45deg,var(--color-yellow),#FFC44D)" aria-hidden="true"></span>
+          <a href="#hero" class="font-semibold">Ваше Банкротство</a>
         </div>
-      </article>`;
-    }).join('');
-    gallery.innerHTML = `<div class="grid">${cards}</div>`;
-  }
+        <div class="hidden md:flex items-center gap-5">
+          <nav class="hidden md:flex items-center gap-6 text-[15px]" aria-label="Основное меню">
+            <a href="#benefits" class="nav-link">Кому подходит</a>
+            <a href="#process" class="nav-link">Этапы</a>
+            <a href="#calc" class="nav-link">Калькулятор</a>
+            <a href="#news" class="nav-link">Новости</a>
+            <a href="#final-cta" class="nav-link">Контакты</a>
+            <a href="#lk" class="nav-link" id="lkNav">Личный кабинет</a>
+          </nav>
+          <form id="siteSearchForm" role="search" class="search" onsubmit="return false" autocomplete="off">
+            <label class="sr-only" for="siteSearch">Поиск по странице</label>
+            <input id="siteSearch" name="q" type="search" placeholder="Поиск" aria-expanded="false" aria-controls="searchPanel" />
+            <div id="searchPanel" class="search-panel" role="listbox" aria-hidden="true"></div>
+          </form>
+          <button id="themeToggle" class="btn text-xs" type="button" aria-pressed="false">Тема</button>
+          <a href="#final-cta" class="btn-primary">Оставить заявку</a>
+        </div>
+        <button id="mMenu" class="md:hidden p-2 rounded-lg border border-slate-200 bg-white" aria-label="Меню" aria-expanded="false" type="button">
+          <svg viewBox="0 0 24 24" class="w-5 h-5" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"/></svg>
+        </button>
+      </div>
 
-  function renderTable(list){
-    if(!list.length){
-      table.innerHTML = '<div class="empty">Ничего не найдено по фильтрам</div>';
-      return;
+      <!-- Mobile panel -->
+      <div id="mPanel" class="hidden md:!hidden fixed inset-0 z-50" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+        <div class="absolute inset-0 bg-black/40" data-close></div>
+        <div class="absolute right-0 top-0 h-full w-80 bg-white border-l border-slate-200 p-6 grid grid-rows-[auto,auto,1fr] gap-4">
+          <div class="flex items-center justify-between">
+            <span id="mTitle" class="font-semibold">Меню</span>
+            <button class="p-2 rounded-lg border border-slate-200" data-close aria-label="Закрыть" type="button">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" aria-hidden="true"><path fill="currentColor" d="m18.3 5.7-12.6 12.6 1.4 1.4 12.6-12.6-1.4-1.4Zm0 12.6L5.7 5.7 4.3 7.1l12.6 12.6 1.4-1.4Z"/></svg>
+            </button>
+          </div>
+          <form id="siteSearchFormM" role="search" class="search" onsubmit="return false" autocomplete="off">
+            <label class="sr-only" for="siteSearchM">Поиск по странице</label>
+            <input id="siteSearchM" name="q" type="search" placeholder="Поиск по странице" aria-expanded="false" aria-controls="searchPanelM" />
+            <div id="searchPanelM" class="search-panel" role="listbox" aria-hidden="true"></div>
+          </form>
+          <nav class="grid content-start gap-2 text-slate-700" id="mTrap">
+            <a href="#benefits" data-close class="p-2 rounded-lg hover:bg-slate-50">Кому подходит</a>
+            <a href="#process" data-close class="p-2 rounded-lg hover:bg-slate-50">Этапы</a>
+            <a href="#calc" data-close class="p-2 rounded-lg hover:bg-slate-50">Калькулятор</a>
+            <a href="#news" data-close class="p-2 rounded-lg hover:bg-slate-50">Новости</a>
+            <a href="#final-cta" data-close class="p-2 rounded-lg hover:bg-slate-50">Контакты</a>
+            <a href="#lk" data-close class="p-2 rounded-lg hover:bg-slate-50">Личный кабинет</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO (Swiper) -->
+    <section id="hero" class="section-divider" style="background:transparent" aria-labelledby="hero-title">
+      <div class="relative mx-auto max-w-7xl px-6 lg:px-10 py-6">
+        <div class="surface-strong p-0 overflow-hidden">
+          <div class="swiper hero-swiper" aria-roledescription="carousel" aria-label="Слайдер героя" aria-live="off">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <div class="relative aspect-[16/10] md:h-[clamp(420px,75vh,720px)]">
+                  <picture class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?q=80&w=1600&auto=format&fit=crop" alt="Списание долгов законно — под ключ" class="w-full h-full object-cover" fetchpriority="high" decoding="async" width="1600" height="900" />
+                  </picture>
+                  <div class="absolute inset-0 bg-gradient-to-b from-black/15 to-black/35" aria-hidden="true"></div>
+                  <div class="absolute inset-0 grid place-items-center px-6 text-center text-white">
+                    <div class="max-w-3xl">
+                      <h1 id="hero-title" class="text-4xl md:text-6xl font-extrabold tracking-tight">Освободим от долгов по закону — начните с чистого листа</h1>
+              <p class="mt-2">Ответьте на вопросы — за 10 секунд покажем, подходит ли вам законное списание долгов. Итог пришлём в мессенджер.</p>
+
+                      <div class="mt-5 flex flex-wrap justify-center gap-2 text-sm">
+                        <span class="px-3 py-1.5 rounded-lg badge-yellow">Снятие давления коллекторов</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/80 text-slate-800 border border-white/30">Защита имущества</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-white/80 text-slate-800 border border-white/30">Работаем по всей стране</span>
+                      </div>
+                      <div class="mt-6 flex flex-wrap gap-3 justify-center">
+                        <a href="#calc" class="btn-primary">Получить личный план списания</a>
+                        <a href="#news" class="btn-ghost">Читайте свежие новости</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Доп. слайды при необходимости -->
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev" aria-label="Предыдущий слайд"></div>
+            <div class="swiper-button-next" aria-label="Следующий слайд"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main id="main" tabindex="-1">
+      <!-- KPI -->
+      <section class="band">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div class="surface p-6"><div class="text-4xl md:text-5xl font-extrabold text-[--color-navy]">20&nbsp;млрд+</div><div class="text-slate-700 font-semibold">списанных долгов через суд</div></div>
+            <div class="surface p-6"><div class="text-4xl md:text-5xl font-extrabold text-[--color-navy]">15&nbsp;тыс+</div><div class="text-slate-700 font-semibold">клиентов уже избавились от долгов</div></div>
+            <div class="surface p-6"><div class="text-4xl md:text-5xl font-extrabold text-[--color-navy]">1100+</div><div class="text-slate-700 font-semibold">городов России</div></div>
+            <div class="surface p-6"><div class="text-4xl md:text-5xl font-extrabold text-[--color-navy]">80&nbsp;тыс+</div><div class="text-slate-700 font-semibold">подписчиков и читателей</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Калькулятор -->
+      <section id="calc" class="band" aria-labelledby="calc-title">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+          <div class="grid lg:grid-cols-2 gap-8 items-start">
+            <div class="surface p-6 md:p-8">
+              <h2 id="calc-title" class="text-3xl font-bold">Быстрая диагностика</h2>
+              <p c подходит ли вам законное списание долгов. Итог пришлём в мессенджер.</p>
+
+              <!-- Радиогруппа: делаем кнопки ролями radio -->
+              <div class="mt-6" role="radiogroup" aria-label="Имеются ли просрочки?">
+                <div class="text-sm text-slate-600 mb-2">Имеются ли просрочки?</div>
+                <div id="arrearsSeg" class="flex flex-wrap gap-2">
+                  <button type="button" class="btn-ghost" data-val="0" role="radio" aria-checked="true">&lt; 1&nbsp;месяца</button>
+                  <button type="button" class="btn-ghost" data-val="1" role="radio" aria-checked="false">&gt; 1&nbsp;месяца</button>
+                  <button type="button" class="btn-ghost" data-val="2" role="radio" aria-checked="false">&gt; 6&nbsp;месяцев</button>
+                  <button type="button" class="btn-ghost" data-val="3" role="radio" aria-checked="false">&gt; 1&nbsp;года</button>
+                  <button type="button" class="btn-ghost" data-val="4" role="radio" aria-checked="false">Плачу вовремя</button>
+                </div>
+              </div>
+
+              <div class="mt-6">
+                <div class="flex items-center justify-between">
+                  <label for="debt" class="text-sm text-slate-600">Сумма долга</label>
+                  <output id="debtOut" class="text-sm font-semibold text-slate-900">500&nbsp;000&nbsp;₽</output>
+                </div>
+                <input id="debt" type="range" min="0" max="3000000" step="10000" value="500000" class="w-full mt-3" />
+              </div>
+
+              <div class="mt-6">
+                <div class="flex items-center justify-between">
+                  <label for="monthly" class="text-sm text-slate-600">Ежемесячный платёж</label>
+                  <output id="monthlyOut" class="text-sm font-semibold text-slate-900">20&nbsp;000&nbsp;₽</output>
+                </div>
+                <input id="monthly" type="range" min="0" max="100000" step="1000" value="20000" class="w-full mt-3" />
+              </div>
+
+              <div class="mt-6">
+                <div class="flex items-center justify-between">
+                  <div class="text-sm text-slate-600 mb-2">Перед кем долги?</div>
+                </div>
+                <div id="who" class="flex flex-wrap gap-2" role="group" aria-label="Категории кредиторов">
+                  <button class="btn-ghost" type="button" data-key="mfo" role="checkbox" aria-checked="true">МФО</button>
+                  <button class="btn-ghost" type="button" data-key="bank" role="checkbox" aria-checked="true">Банки</button>
+                  <button class="btn-ghost" type="button" data-key="tax" role="checkbox" aria-checked="false">Налоги</button>
+                  <button class="btn-ghost" type="button" data-key="fines" role="checkbox" aria-checked="false">Штрафы</button>
+                  <button class="btn-ghost" type="button" data-key="util" role="checkbox" aria-checked="false">ЖКХ</button>
+                  <button class="btn-ghost" type="button" data-key="other" role="checkbox" aria-checked="false">Другое</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="surface p-6 md:p-8">
+              <div class="text-sm text-slate-600">Результат оценки</div>
+              <h3 class="text-2xl md:text-3xl font-extrabold mt-1">Вам подходит списание долгов, если…</h3>
+              <ul class="mt-5 space-y-3">
+                <li class="flex gap-3 items-start"><span class="w-4 h-4 rounded-full" style="background:var(--color-yellow)" aria-hidden="true"></span><span>Долги &gt; 300&nbsp;000 ₽ и нет возможности их выплатить</span></li>
+                <li class="flex gap-3 items-start"><span class="w-4 h-4 rounded-full" style="background:var(--color-yellow)" aria-hidden="true"></span><span>Есть просрочки более 3 месяцев / звонят кредиторы</span></li>
+                <li class="flex gap-3 items-start"><span class="w-4 h-4 rounded-full" style="background:var(--color-yellow)" aria-hidden="true"></span><span>Доход и расходы не позволяют обслуживать долг</span></li>
+              </ul>
+
+              <form id="leadCalc" class="mt-8 grid sm:grid-cols-2 gap-3" novalidate>
+                <label class="sr-only" for="lc_first_name">Имя</label>
+                <input id="lc_first_name" class="px-4 py-3 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2" placeholder="Имя" name="first_name" minlength="2" autocomplete="given-name" required />
+                <label class="sr-only" for="lc_last_name">Фамилия</label>
+                <input id="lc_last_name" class="px-4 py-3 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2" placeholder="Фамилия" name="last_name" minlength="2" autocomplete="family-name" required />
+                <label class="sr-only" for="lc_phone">Телефон</label><input id="lc_phone" class="px-4 py-3 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2 sm:col-span-2" placeholder="Телефон*" name="phone" type="tel" inputmode="tel" autocomplete="tel" required />
+                <p class="text-xs text-red-600 mt-1 hidden" data-err="phone" aria-live="polite"></p>
+                <!-- Honeypot -->
+                <div class="hidden" aria-hidden="true">
+                  <label for="lc_middle_name">Отчество (не заполняйте)</label>
+                  <input id="lc_middle_name" name="middle_name" tabindex="-1" autocomplete="off" />
+                </div>
+                <label class="sm:col-span-2 text-sm text-slate-600 mt-1 inline-flex items-start gap-2">
+                  <input type="checkbox" required class="mt-1 rounded border-slate-300">
+                  <span>Соглашаюсь с <a href="#" class="underline">политикой конфиденциальности</a> и <a href="#" class="underline">пользовательским соглашением</a>.</span>
+                </label>
+                <button class="sm:col-span-2 btn-primary text-base" type="submit">Получить план</button>
+                <div id="leadStatus" class="sm:col-span-2 text-sm text-slate-600" aria-live="polite" role="status"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Этапы -->
+      <section id="process" class="section-divider">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+          <div class="surface p-8 md:p-10">
+            <h2 class="text-3xl md:text-4xl font-bold">Этапы процедуры</h2>
+            <ol class="mt-6 grid md:grid-cols-3 gap-4 md:gap-5 text-slate-700 list-decimal pl-5">
+              <li class="surface p-4 rounded-xl"><span class="font-semibold">Диагностика</span><br>Собираем данные, проверяем риски и критерии неплатёжеспособности.</li>
+              <li class="surface p-4 rounded-xl"><span class="font-semibold">Подача в суд</span><br>Готовим заявление и пакет документов, публикуем в ЕФРСБ.</li>
+              <li class="surface p-4 rounded-xl"><span class="font-semibold">Завершение</span><br>Реестр требований, реализация/реструктуризация, списание долгов.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- Кому подходит -->
+      <section id="benefits">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+          <div class="surface p-8 md:p-10">
+            <h2 class="text-3xl md:text-4xl font-bold">Вам подходит списание долгов, если…</h2>
+            <div class="mt-8 grid md:grid-cols-2 gap-4 md:gap-5">
+              <div class="flex items-start gap-3 surface p-4"><span class="w-4 h-4 rounded-full" style="background:var(--color-yellow)" aria-hidden="true"></span><span class="text-lg font-semibold">Долги &gt; 300&nbsp;000 ₽ и нет возможности их выплатить</span></div>
+              <div class="flex items-start gap-3 surface p-4"><span class="w-4 h-4 rounded-full" style="background:var(--color-yellow)" aria-hidden="true"></span><span class="text-lg font-semibold">Звонят коллекторы и кредиторы</span></div>
+              <div class="flex items-start gap-3 surface p-4"><span class="w-4 h-4 rounded-full" style="background:var(--color-yellow)" aria-hidden="true"></span><span class="text-lg font-semibold">Доход не покрывает платежи</span></div>
+              <div class="flex items-start gap-3 surface p-4"><span class="w-4 h-4 rounded-full" style="background:var(--color-yellow)" aria-hidden="true"></span><span class="text-lg font-semibold">Есть просрочки более 3 месяцев</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Новости (плейсхолдер) -->
+      <section id="news" class="section-divider">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+          <div class="flex items-end justify-between gap-4">
+            <div>
+              <h2 class="text-3xl md:text-4xl font-bold">Последние новости о банкротстве</h2>
+              <p class="mt-2">Обновляем дайджестами: закон, практика ВС, ЕФРСБ, разъяснения.</p>
+            </div>
+            <div class="hidden md:block text-sm text-slate-600">Источник: официальные публикации и правовые системы</div>
+          </div>
+          <div id="newsGrid" class="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+          <div class="mt-6"><a href="#final-cta" class="btn-ghost">Нужна консультация по вашей ситуации?</a></div>
+        </div>
+      </section>
+
+      <section id="lk" class="section-divider">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+          <div class="surface p-7 md:p-9" id="lkShell">
+            <h2 class="text-3xl md:text-4xl font-bold">Личный кабинет</h2>
+            <p class="mt-2 text-slate-600">Авторизация по телефону. Заявки из форм автоматически подтягиваются сюда.</p>
+
+            <div id="lkAuth" class="mt-4 grid gap-3">
+              <div class="grid sm:grid-cols-[1fr_auto] gap-2">
+                <label class="sr-only" for="lkPhone">Телефон</label>
+                <input type="tel" id="lkPhone" class="px-4 py-3 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2" placeholder="Телефон*" inputmode="tel" autocomplete="tel" required>
+                <button id="lkSend" class="btn-primary" type="button">Получить код</button>
+              </div>
+              <div id="lkCodeWrap" class="hidden grid sm:grid-cols-[1fr_auto] gap-2">
+                <label class="sr-only" for="lkCode">Код из СМС</label>
+                <input type="text" id="lkCode" maxlength="6" class="px-4 py-3 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2" placeholder="Код из СМС" inputmode="numeric" autocomplete="one-time-code">
+                <button id="lkVerify" class="btn-ghost" type="button">Войти</button>
+              </div>
+              <div id="lkMsg" class="text-sm text-slate-600" aria-live="polite" role="status"></div>
+            </div>
+
+            <div id="lkArea" class="mt-6 hidden">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div id="lkHello" class="text-slate-600"></div>
+                <div class="flex gap-2">
+                  <button id="lkExport" class="btn-ghost text-sm" type="button">Экспорт заявок</button>
+                  <button id="lkLogout" class="btn-ghost text-sm" type="button">Выход</button>
+                </div>
+              </div>
+              <div class="mt-4">
+                <h3 class="font-semibold">Ваши заявки</h3>
+                <div id="lkLeads" class="mt-3 grid gap-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="final-cta" class="section-divider">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+          <div class="surface p-7 md:p-9">
+            <h2 class="text-3xl md:text-4xl font-bold">Мы подберём индивидуальное решение вашей ситуации</h2>
+            <p class="mt-2 text-slate-600">Оставьте контакты — юрист свяжется, оценит риски и предложит план действий.</p>
+            <form id="finalForm" class="mt-6 grid sm:grid-cols-2 gap-3" novalidate>
+              <label class="sr-only" for="ff_first_name">Имя</label>
+              <input id="ff_first_name" class="px-4 py-3 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2" placeholder="Имя" name="first_name" minlength="2" autocomplete="given-name" required />
+              <label class="sr-only" for="ff_last_name">Фамилия</label>
+              <input id="ff_last_name" class="px-4 py-3 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2" placeholder="Фамилия" name="last_name" minlength="2" autocomplete="family-name" required />
+              <label class="sr-only" for="ff_phone">Телефон</label>
+              <input id="ff_phone" class="px-4 py-3 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2 sm:col-span-2" placeholder="Телефон*" name="phone" type="tel" inputmode="tel" autocomplete="tel" required />
+              <p class="text-xs text-red-600 mt-1 hidden" data-err="phone" aria-live="polite"></p>
+              <button class="sm:col-span-2 btn-primary text-base" type="submit">Бесплатная консультация</button>
+              <label class="sm:col-span-2 text-sm text-slate-600 mt-1 inline-flex items-start gap-2">
+                <input type="checkbox" required class="mt-1 rounded border-slate-300">
+                <span>Соглашаюсь с <a href="#" class="underline">политикой конфиденциальности</a> и <a href="#" class="underline">пользовательским соглашением</a>.</span>
+              </label>
+              <!-- Honeypot -->
+              <div class="hidden" aria-hidden="true">
+                <label for="ff_middle_name">Отчество (не заполняйте)</label>
+                <input id="ff_middle_name" name="middle_name" tabindex="-1" autocomplete="off" />
+              </div>
+              <div id="finalStatus" class="sm:col-span-2 text-sm text-slate-600" aria-live="polite" role="status"></div>
+            </form>
+            <ul class="mt-4 grid sm:grid-cols-3 gap-3 text-sm text-slate-600">
+              <li class="surface p-3">⚖️ Бесплатная диагностика дела</li>
+              <li class="surface p-3">🛡️ Конфиденциально</li>
+              <li class="surface p-3">🌍 Работаем по всей России</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <footer class="bg-[--color-navy] text-white border-t border-white/10">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10 py-14 grid md:grid-cols-4 gap-8 text-sm">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="h-7 w-7 rounded-md" style="background:linear-gradient(45deg,var(--color-yellow),#FFC44D)" aria-hidden="true"></span>
+              <div class="font-semibold">Ваше Банкротство</div>
+            </div>
+            <p class="mt-3 text-white/80">Москва, ул. Примерная, 1 · Пн–Пт 10:00–19:00</p>
+            <div class="mt-3 space-y-1">
+              <a class="block hover:underline" href="mailto:info@example.com">info@example.com</a>
+              <a class="block hover:underline" href="tel:+78001014203">8 (800) 101-42-03</a>
+            </div>
+            <div class="mt-3 text-white/70">ИНН 1234567890 · ОГРН 1234567890123</div>
+            <div class="mt-2 space-x-3">
+              <a class="hover:underline text-white/80" href="#">Политика конфиденциальности</a>
+              <span class="opacity-50">·</span>
+              <a class="hover:underline text-white/80" href="#">Пользовательское соглашение</a>
+            </div>
+          </div>
+          <div>
+            <div class="font-semibold mb-3">Компания</div>
+            <ul class="space-y-2 text-white/80">
+              <li><a class="hover:underline" href="#calc">Этапы процедуры</a></li>
+              <li><a class="hover:underline" href="#news">Новости</a></li>
+              <li><a class="hover:underline" href="#final-cta">Контакты</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="font-semibold mb-3">Услуги</div>
+            <ul class="space-y-2 text-white/80">
+              <li><a class="hover:underline" href="#calc">Быстрая диагностика</a></li>
+              <li><a class="hover:underline" href="#hero">Банкротство физических лиц</a></li>
+              <li><a class="hover:underline" href="#hero">Списание долгов</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="font-semibold mb-3">Мы на связи</div>
+            <div class="flex flex-wrap gap-2">
+              <a href="https://vk.com/" target="_blank" rel="noopener nofollow" class="btn-ghost" style="color:#0077FF" aria-label="VK">VK</a>
+              <a href="https://t.me/" target="_blank" rel="noopener nofollow" class="btn-ghost" style="color:#0088CC" aria-label="Telegram">Telegram</a>
+              <a href="https://wa.me/" target="_blank" rel="noopener nofollow" class="btn-ghost" style="color:#25D366" aria-label="WhatsApp">WhatsApp</a>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-white/10 py-5 text-center text-xs text-white/70">© <span id="year"></span> Ваше Банкротство</div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Sticky mobile CTA -->
+  <div id="stickyCta" class="md:hidden fixed left-0 right-0 bottom-0 p-3 bg-white border-t border-slate-200 z-[120]" style="display:none">
+    <div class="mx-auto max-w-7xl flex items-center justify-between gap-3">
+      <div class="text-sm font-semibold">Готовы обсудить вашу ситуацию?</div>
+      <a href="#final-cta" class="btn-primary">Бесплатная консультация</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+  (() => {
+    'use strict';
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+    const clamp = (n, a, b) => Math.min(Math.max(n, a), b);
+
+    /* ===== 0) Sticky header / theme / mobile ===== */
+    const hdr = $('#hdr');
+    const makeHdrSolid = () => hdr?.classList.toggle('hdr--solid', window.scrollY > 8);
+    document.addEventListener('scroll', makeHdrSolid, {passive:true}); makeHdrSolid();
+
+    const mMenu = $('#mMenu'), mPanel = $('#mPanel');
+    const mCloseEls = $$('#mPanel [data-close]');
+    let releaseTrap = null;
+    function trapFocus(modal){
+      const sel = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
+      const list = () => Array.from(modal.querySelectorAll(sel)).filter(n=>n.offsetParent!==null);
+      function onKey(e){
+        if(e.key!=="Tab") return; const f=list(); if(!f.length) return;
+        const first=f[0], last=f[f.length-1];
+        if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+        else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+      }
+      modal.addEventListener('keydown', onKey);
+      return ()=> modal.removeEventListener('keydown', onKey);
     }
-    const rows = list.map(x=>`<tr>
-      <td>${x.path}</td>
-      <td>${x.ext||''}</td>
-      <td>${(x.bytes/1024).toFixed(1)} KB</td>
-      <td>${x.is_image ? 'да' : '—'}</td>
-      <td>${x.width||''}</td>
-      <td>${x.height||''}</td>
-      <td>${x.aspect||''}</td>
-      <td>${x.mode||''}</td>
-      <td>${x.duplicate_set||''}</td>
-      <td>${x.error ? `<span class="bad">${x.error}</span>` : ''}</td>
-    </tr>`).join('');
-    table.innerHTML = `<div style="overflow:auto"><table>
-      <thead><tr><th>Путь</th><th>Расш.</th><th>Размер</th><th>Изобр.</th><th>W</th><th>H</th><th>Аспект</th><th>Режим</th><th>Дубликат</th><th>Ошибка</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table></div>`;
-  }
+    const openM = () => {
+      mPanel?.classList.remove('hidden');
+      mMenu?.setAttribute('aria-expanded','true');
+      document.body.style.overflow='hidden';
+      releaseTrap = trapFocus(mPanel);
+      mPanel.querySelector('[data-close]')?.focus();
+    };
+    const closeM = () => {
+      mPanel?.classList.add('hidden');
+      mMenu?.setAttribute('aria-expanded','false');
+      document.body.style.overflow='';
+      releaseTrap && releaseTrap();
+      mMenu?.focus();
+    };
+    mMenu?.addEventListener('click', () => mPanel?.classList.contains('hidden') ? openM() : closeM());
+    mCloseEls.forEach(el => el.addEventListener('click', closeM));
+    document.addEventListener('keydown', e => { if(e.key==='Escape') closeM(); });
 
-  function apply(){
-    const filtered = items.filter(match);
-    const galleryItems = filtered.filter(x=>x.is_image);
-    renderGallery(galleryItems);
-    renderTable(filtered);
-  }
+    const THEME_KEY = 'theme'; const root = document.documentElement;
+    const applyTheme = t => { root.classList.toggle('dark', t==='dark'); $('#themeToggle')?.setAttribute('aria-pressed', t==='dark'); };
+    const getPref = () => localStorage.getItem(THEME_KEY) || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(getPref());
+    $('#themeToggle')?.addEventListener('click', () => {
+      const next = root.classList.contains('dark') ? 'light' : 'dark';
+      localStorage.setItem(THEME_KEY, next); applyTheme(next);
+    });
 
-  // Tabs
-  const tabGrid = document.getElementById('tabGrid');
-  const tabTable = document.getElementById('tabTable');
-  function showGrid(){
-    tabGrid.setAttribute('aria-selected', 'true');
-    tabTable.setAttribute('aria-selected', 'false');
-    gallery.hidden = false; table.hidden = true;
-  }
-  function showTable(){
-    tabGrid.setAttribute('aria-selected', 'false');
-    tabTable.setAttribute('aria-selected', 'true');
-    gallery.hidden = true; table.hidden = false;
-  }
-  tabGrid.addEventListener('click', showGrid);
-  tabTable.addEventListener('click', showTable);
-  // default = Grid
-  showGrid();
+    // sticky mobile CTA toggle
+    const sticky = $('#stickyCta');
+    const finalCta = $('#final-cta');
+    const ioSticky = sticky && finalCta && new IntersectionObserver(([e])=>{
+      sticky.style.display = e.isIntersecting ? 'none' : 'block';
+    });
+    if(ioSticky && finalCta) ioSticky.observe(finalCta);
 
-  q.addEventListener('input', apply);
-  extSel.addEventListener('change', apply);
+    // 0.a) Security for external links, calc a11y init, active nav highlight
+    function ensureRelSecurity(){
+      document.querySelectorAll('a[target="_blank"]').forEach(a=>{
+        const parts = (a.getAttribute('rel')||'').split(' ').filter(Boolean);
+        ['noopener','noreferrer'].forEach(t=>{ if(!parts.includes(t)) parts.push(t); });
+        a.setAttribute('rel', parts.filter(Boolean).join(' '));
+      });
+    }
+    function updateRovingRadios(box){
+      const items = Array.from(box.querySelectorAll('button[role="radio"]'));
+      if(!items.length) return;
+      items.forEach(b => b.setAttribute('tabindex', b.getAttribute('aria-checked')==='true' ? '0' : '-1'));
+    }
+    function initCalcA11y(){
+      const ag = document.getElementById('arrearsSeg');
+      if(ag){
+        const btns = Array.from(ag.querySelectorAll('button'));
+        btns.forEach(b => { b.setAttribute('role','radio'); b.setAttribute('tabindex','-1'); });
+        let current = btns.find(b => b.getAttribute('aria-checked')==='true' || b.getAttribute('aria-pressed')==='true') || btns[0];
+        btns.forEach(b => b.setAttribute('aria-checked','false'));
+        if(current){ current.setAttribute('aria-checked','true'); current.setAttribute('tabindex','0'); }
+        btns.forEach(b=> b.removeAttribute('aria-pressed'));
+        updateRovingRadios(ag);
+      }
+      const who = document.getElementById('who');
+      if(who){
+        who.setAttribute('role','group');
+        who.setAttribute('aria-label','Перед кем долги?');
+        Array.from(who.querySelectorAll('button')).forEach(b=>{
+          b.setAttribute('role','checkbox');
+          const had = b.getAttribute('aria-pressed');
+          if(had!==null){ b.setAttribute('aria-checked', had==='true' ? 'true' : 'false'); b.removeAttribute('aria-pressed'); }
+          else if(!b.hasAttribute('aria-checked')){ b.setAttribute('aria-checked','false'); }
+        });
+      }
+    }
+    function setupActiveNav(){
+      const links = Array.from(document.querySelectorAll('header nav a[href^="#"]'));
+      const map = links.map(a=>{ const id=a.getAttribute('href').slice(1); return { a, id, el: document.getElementById(id) }; }).filter(x=>x.el);
+      if(!map.length) return;
+      const setActive = (id)=>{ links.forEach(l=> l.removeAttribute('aria-current')); const m = map.find(m=>m.id===id); if(m) m.a.setAttribute('aria-current','true'); };
+      const io = new IntersectionObserver((entries)=>{
+        const vis = entries.filter(e=>e.isIntersecting).sort((a,b)=> b.intersectionRatio - a.intersectionRatio);
+        if(vis[0]) setActive(vis[0].target.id);
+      }, { threshold: 0.6, rootMargin: '0px 0px -10% 0px' });
+      map.forEach(m=> io.observe(m.el));
+    }
 
-  apply();
-}
-loadData();
-</script>
+    function captureUtm(){
+      try{
+        const params = new URLSearchParams(location.search);
+        const utm = {};
+        ['source','medium','campaign','term','content'].forEach(k=>{
+          const v = params.get('utm_'+k);
+          if(v) utm['utm_'+k] = v;
+        });
+        const ref = document.referrer || '';
+        const existing = JSON.parse(localStorage.getItem('utm')||'{}');
+        const merged = { ...existing, ...utm };
+        if(ref && !merged.referrer) merged.referrer = ref;
+        if(Object.keys(merged).length){ localStorage.setItem('utm', JSON.stringify(merged)); }
+      }catch(_){ }
+    }
+    function readUtm(){ try{ return JSON.parse(localStorage.getItem('utm')||'null'); }catch(_){ return null; } }
+
+    ensureRelSecurity();
+    initCalcA11y();
+    setupActiveNav();
+    captureUtm();
+
+    /* ===== 1) Page search (desktop+mobile) ===== */
+    function buildIndex(){
+      const items = [];
+      $$('#app [id]').forEach(sec => {
+        if(!sec.id) return;
+        const h = sec.querySelector('h2, h3');
+        if(h) items.push({ id: sec.id, title: h.textContent.trim(), snippet: (sec.querySelector('p')?.textContent || '').trim() });
+      });
+      return items;
+    }
+    const index = buildIndex();
+    function setupSearch(formSel, inputSel, panelSel){
+      const input = $(inputSel), panel = $(panelSel);
+      if(!input || !panel) return;
+      let hover = -1, results = [];
+      const render = () => {
+        panel.innerHTML = results.map((r,i)=>`
+          <div class="search-item" role="option" aria-selected="${i===hover}" data-i="${i}">
+            <div class="t">${r.title}</div>
+            <div class="s">${r.snippet ? r.snippet.slice(0,100)+'…' : ''}</div>
+          </div>`).join('') || `<div class="p-3 text-sm text-slate-600">Ничего не найдено</div>`;
+        panel.setAttribute('aria-hidden', String(!input.value));
+        input.setAttribute('aria-expanded', String(Boolean(input.value)));
+      };
+      const onType = () => {
+        const q = input.value.trim().toLowerCase();
+        if(!q){ results=[]; hover=-1; render(); return; }
+        results = index
+          .map(r => ({...r, score: (r.title.toLowerCase().includes(q)?2:0) + (r.snippet.toLowerCase().includes(q)?1:0)}))
+          .filter(r => r.score>0)
+          .sort((a,b)=>b.score-a.score).slice(0,8);
+        hover = results.length ? 0 : -1; render();
+      };
+      input.addEventListener('input', onType);
+      input.addEventListener('focus', onType);
+      $(formSel)?.addEventListener('submit', e => e.preventDefault());
+      panel.addEventListener('mousemove', e => {
+        const item = e.target.closest('.search-item'); if(!item) return;
+        hover = Number(item.dataset.i); render();
+      });
+      panel.addEventListener('click', e => {
+        const item = e.target.closest('.search-item'); if(!item) return;
+        const r = results[Number(item.dataset.i)]; if(!r) return;
+        location.hash = '#'+r.id; panel.setAttribute('aria-hidden','true'); input.blur();
+      });
+      input.addEventListener('keydown', e=>{
+        if(e.key==='ArrowDown'){ hover = clamp(hover+1, 0, results.length-1); render(); }
+        else if(e.key==='ArrowUp'){ hover = clamp(hover-1, 0, results.length-1); render(); }
+        else if(e.key==='Enter' && results[hover]){ location.hash='#'+results[hover].id; panel.setAttribute('aria-hidden','true'); input.blur(); }
+        else if(e.key==='Escape'){ panel.setAttribute('aria-hidden','true'); input.blur(); }
+      });
+    }
+    setupSearch('#siteSearchForm', '#siteSearch', '#searchPanel');
+    setupSearch('#siteSearchFormM', '#siteSearchM', '#searchPanelM');
+    $('#tbSearchBtn')?.addEventListener('click', (e)=>{ e.preventDefault(); $('#siteSearch')?.focus(); });
+
+    /* ===== 2) Калькулятор ===== */
+    const fmtCur = n => n.toLocaleString('ru-RU') + ' ₽';
+    const debt = $('#debt'), debtOut = $('#debtOut');
+    const monthly = $('#monthly'), monthlyOut = $('#monthlyOut');
+    function syncOut(){
+      const nbsp = String.fromCharCode(160);
+      if(debtOut && debt) debtOut.innerHTML = fmtCur(Number(debt.value));
+      if(monthlyOut && monthly) monthlyOut.innerHTML = fmtCur(Number(monthly.value));
+      if(debt){
+        debt.setAttribute('aria-describedby','debtOut');
+        if(debtOut) debt.setAttribute('aria-valuetext', debtOut.textContent.split(nbsp).join(' '));
+      }
+      if(monthly){
+        monthly.setAttribute('aria-describedby','monthlyOut');
+        if(monthlyOut) monthly.setAttribute('aria-valuetext', monthlyOut.textContent.split(nbsp).join(' '));
+      }
+    }
+    debt?.addEventListener('input', syncOut);
+    monthly?.addEventListener('input', syncOut);
+    syncOut();
+
+    function setupSeg(containerSel){
+      const box = $(containerSel); if(!box) return;
+      box.addEventListener('click', e=>{
+        const btn = e.target.closest('button'); if(!btn) return;
+        const isRadio = box.id==='arrearsSeg';
+        if(isRadio){
+          $$('#'+box.id+' [role="radio"]').forEach(b=> b.setAttribute('aria-checked','false'));
+          btn.setAttribute('aria-checked','true');
+          updateRovingRadios(box);
+        } else {
+          const checked = btn.getAttribute('aria-checked')==='true';
+          btn.setAttribute('aria-checked', String(!checked));
+        }
+      });
+      box.addEventListener('keydown', e=>{
+        const active = document.activeElement.closest('#'+box.id+' button'); if(!active) return;
+        if(e.key==='Enter' || e.key===' '){ active.click(); e.preventDefault(); return; }
+        if(box.id==='arrearsSeg' && (e.key==='ArrowRight' || e.key==='ArrowDown' || e.key==='ArrowLeft' || e.key==='ArrowUp')){
+          const items = Array.from(box.querySelectorAll('button[role="radio"]'));
+          const curr = items.indexOf(active);
+          const dir = (e.key==='ArrowRight' || e.key==='ArrowDown') ? 1 : -1;
+          const next = (curr + dir + items.length) % items.length;
+          items.forEach(b=> b.setAttribute('aria-checked','false'));
+          items[next].setAttribute('aria-checked','true');
+          updateRovingRadios(box);
+          items[next].focus();
+          e.preventDefault();
+        }
+      });
+    }
+    setupSeg('#arrearsSeg'); setupSeg('#who');
+
+    const digitsOnly = s => Array.from(String(s||'')).filter(ch => ch>='0' && ch<='9').join('');
+    const normalizePhone = v => {
+      const dRaw = digitsOnly(v);
+      const d = dRaw.startsWith('8') ? ('7'+dRaw.slice(1)) : (dRaw.startsWith('7') ? dRaw : ('7'+dRaw));
+      const s = d.slice(0,11);
+      const p = s.padEnd(11,'_');
+      let out = `+${p[0]} (${p.slice(1,4)}) ${p.slice(4,7)}-${p.slice(7,9)}-${p.slice(9,11)}`;
+      while(out.endsWith('_') || out.endsWith('-')) out = out.slice(0,-1);
+      return out.trim();
+    };
+    $$('input[type="tel"]').forEach(i=>{
+      i.addEventListener('input', ()=> i.value = normalizePhone(i.value));
+      i.addEventListener('blur', ()=> i.value = normalizePhone(i.value));
+    });
+
+    function snapshotCalc(){
+      const arrearsBtn = document.querySelector('#arrearsSeg [aria-checked="true"]');
+      const who = Array.from(document.querySelectorAll('#who [aria-checked="true"]')).map(b=>b.dataset.key);
+      return {
+        arrears: arrearsBtn ? arrearsBtn.dataset.val : null,
+        debt: document.getElementById('debt') ? Number(document.getElementById('debt').value) : null,
+        monthly: document.getElementById('monthly') ? Number(document.getElementById('monthly').value) : null,
+        who
+      };
+    }
+
+    function localLeads(){ return JSON.parse(localStorage.getItem('leads')||'[]'); }
+    function saveLead(obj){
+      const list = localLeads();
+      list.push({ ...obj, id: Date.now(), ts:new Date().toISOString() });
+      localStorage.setItem('leads', JSON.stringify(list));
+      return list[list.length-1];
+    }
+    function showStatus(el, text){ if(el){ el.textContent = text; } }
+
+    async function sendLead(formId, fd){
+      const payload = {
+        first_name: (fd.get('first_name')||'').toString().trim() || null,
+        last_name:  (fd.get('last_name')||'').toString().trim()  || null,
+        phone:      digitsOnly(fd.get('phone')||''),
+        form: formId.replace('#',''),
+        context: snapshotCalc(),
+        utm: (typeof readUtm === 'function' ? readUtm() : null)
+      };
+      const saved = saveLead(payload);
+      document.dispatchEvent(new CustomEvent('lead:submit', { detail: { form: formId, data: Object.fromEntries(fd), local: saved } }));
+      return saved;
+    }
+    function handleForm(formId, statusSel){
+      const form = document.querySelector(formId); if(!form) return;
+      const status = statusSel ? document.querySelector(statusSel) : null;
+      const phoneInput = form.querySelector('input[name="phone"]');
+      const phoneErr = form.querySelector('[data-err="phone"]');
+      if (phoneInput) {
+        phoneInput.addEventListener('input', () => {
+          const ok = digitsOnly(phoneInput.value || '').length >= 11;
+          if (ok) {
+            phoneInput.removeAttribute('aria-invalid');
+            if (phoneErr) { phoneErr.textContent = ''; phoneErr.classList.add('hidden'); }
+          }
+        });
+      }
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const fd = new FormData(form);
+        const hp = (fd.get('middle_name')||'').toString().trim();
+        if(hp){ showStatus(status, 'Спасибо!'); return; }
+        const phone = digitsOnly(fd.get('phone')||'');
+        if (phone.length < 11) {
+          showStatus(status, 'Пожалуйста, укажите корректный телефон.');
+          if (phoneInput) phoneInput.setAttribute('aria-invalid','true');
+          if (phoneErr) { phoneErr.textContent = 'Пожалуйста, укажите корректный телефон.'; phoneErr.classList.remove('hidden'); }
+          return;
+        }
+        if (phoneInput) phoneInput.removeAttribute('aria-invalid');
+        if (phoneErr) { phoneErr.textContent = ''; phoneErr.classList.add('hidden'); }
+        showStatus(status, 'Отправляем…');
+        try{
+          await sendLead(formId, fd);
+          showStatus(status, 'Готово! Мы свяжемся с вами в ближайшее время.');
+          form.reset(); syncOut();
+        }catch(_){
+          showStatus(status, 'Готово! Мы свяжемся с вами в ближайшее время.');
+          form.reset(); syncOut();
+        }
+      });
+    }
+    handleForm('#leadCalc', '#leadStatus');
+    handleForm('#finalForm', '#finalStatus');
+
+    function getToken(){ return localStorage.getItem('lkToken'); }
+    function setToken(t){ localStorage.setItem('lkToken', t); }
+    function clearToken(){ localStorage.removeItem('lkToken'); }
+
+    const lk = {
+      el: $('#lkShell'),
+      auth: $('#lkAuth'),
+      codeWrap: $('#lkCodeWrap'),
+      msg: $('#lkMsg'),
+      hello: $('#lkHello'),
+      area: $('#lkArea'),
+      leads: $('#lkLeads'),
+      phone: $('#lkPhone'),
+      send: $('#lkSend'),
+      code: $('#lkCode'),
+      verify: $('#lkVerify'),
+      exportBtn: $('#lkExport'),
+      logout: $('#lkLogout')
+    };
+
+    const otpStoreKey = (phone) => `otp:${phone}`;
+    function sendOtpMock(phone){
+      const code = String(Math.floor(100000 + Math.random()*900000));
+      localStorage.setItem(otpStoreKey(phone), JSON.stringify({ code, ts: Date.now() }));
+      return code;
+    }
+    function verifyOtpMock(phone, code){
+      const raw = localStorage.getItem(otpStoreKey(phone)); if(!raw) return false;
+      const parsed = JSON.parse(raw);
+      const ok = parsed.code===code && (Date.now()-parsed.ts) < 10*60*1000;
+      if(ok) localStorage.removeItem(otpStoreKey(phone));
+      return ok;
+    }
+
+    lk.send?.addEventListener('click', async ()=>{
+      const phone = digitsOnly(lk.phone.value||'');
+      if(phone.length<11){ lk.msg.textContent='Укажите корректный телефон.'; return; }
+      const code = sendOtpMock(phone);
+      lk.msg.textContent = `Код отправлен. (мок: ${code})`;
+      lk.codeWrap.classList.remove('hidden');
+      lk.code?.focus();
+    });
+
+    lk.verify?.addEventListener('click', async ()=>{
+      const phone = digitsOnly(lk.phone.value||'');
+      const code = (lk.code.value||'').trim();
+      if(code.length<4){ lk.msg.textContent='Введите код из СМС.'; return; }
+      if(verifyOtpMock(phone, code)){ setToken(`mock.${phone}.${Date.now()}`); }
+      else{ lk.msg.textContent='Код неверный или просрочен.'; return; }
+
+      lk.auth.classList.add('hidden');
+      lk.area.classList.remove('hidden');
+      lk.hello.textContent = `Здравствуйте, +${phone}`;
+      renderLeads();
+    });
+
+    lk.logout?.addEventListener('click', ()=>{
+      clearToken();
+      lk.area.classList.add('hidden');
+      lk.auth.classList.remove('hidden');
+      lk.msg.textContent='Вы вышли из аккаунта.';
+    });
+
+    lk.exportBtn?.addEventListener('click', ()=>{
+      const data = localLeads();
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href=url; a.download=`leads-${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    function renderLeads(){
+      const list = localLeads();
+      lk.leads.innerHTML = list.length ? list.map(l => `
+        <div class="surface p-4 grid sm:grid-cols-[1fr_auto] gap-3">
+          <div>
+            <div class="font-semibold">${l.first_name||'—'} ${l.last_name||''}</div>
+            <div class="text-sm text-slate-600">Тел.: +${l.phone}</div>
+            <div class="text-xs text-slate-500 mt-1">${new Date(l.ts).toLocaleString('ru-RU')}</div>
+          </div>
+          <div class="text-sm text-slate-600">Форма: ${l.form}</div>
+        </div>
+      `).join('') : `<div class="text-sm text-slate-600">Заявок пока нет.</div>`;
+    }
+    if(getToken()){
+      lk.auth.classList.add('hidden');
+      lk.area.classList.remove('hidden');
+      lk.hello.textContent = 'Здравствуйте!';
+      renderLeads();
+    }
+
+    /* ===== 4) Новости (мок) ===== */
+    (function news(){
+      const grid = $('#newsGrid'); if(!grid) return;
+      const items = [
+        {t:'ВС РФ уточнил порядок реализации имущества должника', d:'2025-07-10', s:'Постановление затрагивает случаи единственного жилья.', u:'#'},
+        {t:'ЕФРСБ внедрил обновлённые формы сообщений', d:'2025-06-22', s:'Новые требования к публикациям арбитражных управляющих.', u:'#'},
+        {t:'Индексация МРОТ и влияние на рассрочку', d:'2025-05-30', s:'Как меняются платежи при реструктуризации.', u:'#'}
+      ];
+      grid.innerHTML = items.map(i=>`
+        <a class="surface p-5 block" href="${i.u}" target="_blank" rel="noopener">
+          <div class="text-xs text-slate-500">${new Date(i.d).toLocaleDateString('ru-RU')}</div>
+          <div class="mt-1 font-semibold">${i.t}</div>
+          <div class="mt-2 text-sm text-slate-600">${i.s}</div>
+        </a>
+      `).join('');
+    })();
+
+    /* ===== 5) Карта РФ (заглушка + загрузка /assets/rf.svg) ===== */
+    (async function rf(){
+      const stage = document.createElementNS('http://www.w3.org/2000/svg','g');
+      const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+
+      const section = document.querySelector('#benefits').parentElement;
+      const wrap = document.createElement('section'); wrap.id = 'rf-map'; wrap.className = 'band'; wrap.setAttribute('aria-labelledby','rfmap-title');
+      wrap.innerHTML = `
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <h2 id="rfmap-title" class="text-3xl md:text-4xl font-bold">Работаем по всей стране</h2>
+              <p class="mt-2 text-slate-600">Наводите/кликайте по региону, используйте поиск — масштаб как на референсе.</p>
+            </div>
+            <div class="flex gap-2 items-center">
+              <input id="rfSearch" class="px-3 py-2 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2 w-64" type="search" placeholder="Найти регион…" autocomplete="off" />
+              <div class="flex gap-1 p-1 rounded-lg border border-slate-200 bg-slate-50">
+                <button type="button" class="btn-ghost text-xs" id="rfZoomOut" aria-label="Уменьшить">–</button>
+                <button type="button" class="btn-ghost text-xs" id="rfZoomReset" aria-label="Сбросить">100%</button>
+                <button type="button" class="btn-ghost text-xs" id="rfZoomIn" aria-label="Увеличить">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="surface p-4 md:p-5 mt-5 relative">
+            <div id="rfViewport" class="rfmap relative w-full overflow-hidden rounded-xl border border-slate-200 select-none" role="img" aria-label="Карта России по регионам" style="height:480px">
+              <div id="rfSkel" aria-hidden="true" class="absolute inset-0 animate-pulse bg-gradient-to-br from-slate-50 to-slate-100"></div>
+            </div>
+            <div id="rfInfo" class="mt-3 text-sm text-slate-700" aria-live="polite"></div>
+            <div class="mt-2 text-sm text-slate-600">Легенда: <span class="inline-block w-4 h-3 rounded bg-[#e2e8f0] align-middle"></span> мало · <span class="inline-block w-4 h-3 rounded bg-[#fecaca] align-middle"></span> средне · <span class="inline-block w-4 h-3 rounded bg-[#fca5a5] align-middle"></span> выше среднего · <span class="inline-block w-4 h-3 rounded bg-[#ef4444] align-middle"></span> много</div>
+          </div>
+        </div>`;
+      section.after(wrap);
+
+      const rfViewport = wrap.querySelector('#rfViewport');
+      const rfInfo = wrap.querySelector('#rfInfo');
+      const rfSkel = wrap.querySelector('#rfSkel');
+
+      svg.setAttribute('id','rfSvg');
+      svg.setAttribute('class','absolute inset-0 w-full h-full');
+      svg.setAttribute('viewBox','0 0 100 100');
+      svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+      const stageG = stage; stageG.setAttribute('id','rfStage');
+      svg.appendChild(stageG);
+      rfViewport.appendChild(svg);
+
+      const mapTip = document.createElement('div');
+      mapTip.id='mapTip'; mapTip.className='rf-tip hidden';
+      rfViewport.appendChild(mapTip);
+
+      try{
+        const resp = await fetch('/assets/rf.svg');
+        if(!resp.ok) throw new Error('no rf.svg');
+        const text = await resp.text();
+        const tmp = document.createElementNS('http://www.w3.org/2000/svg','svg');
+        tmp.innerHTML = text;
+        const g = tmp.querySelector('g') || tmp;
+        const regions = Array.from(g.querySelectorAll('path, polygon, polyline, rect'));
+        regions.forEach(r => {
+          r.classList.add('region');
+          const id = r.getAttribute('id') || '';
+          r.dataset.id = id;
+          r.dataset.name = r.getAttribute('data-name') || (id.startsWith('RU-') ? id.slice(3) : id) || 'Регион';
+          const score = (id.charCodeAt(3)||50) % 4; // 0..3
+          const colors = ['#e2e8f0','#fecaca','#fca5a5','#ef4444'];
+          r.setAttribute('fill', colors[score]);
+          stageG.appendChild(r);
+        });
+        rfSkel?.remove();
+        rfInfo.textContent = 'Подсказка: наведите на регион, клик — закрепление.';
+        function showTip(x,y, text){ mapTip.textContent = text; mapTip.style.left=x+'px'; mapTip.style.bottom=(svg.clientHeight - y)+'px'; mapTip.classList.remove('hidden'); }
+        function hideTip(){ mapTip.classList.add('hidden'); }
+        stageG.addEventListener('mousemove', e=>{
+          const r = e.target.closest('.region'); if(!r) { hideTip(); return; }
+          const name = r.dataset.name || r.dataset.id || 'Регион';
+          const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+          const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+          showTip(svgP.x+12, svgP.y, name);
+        });
+        stageG.addEventListener('mouseleave', ()=> mapTip.classList.add('hidden'));
+        stageG.addEventListener('click', e=>{
+          const r = e.target.closest('.region'); if(!r) return;
+          const act = r.getAttribute('data-active')==='true';
+          $$('#rfStage .region[data-active="true"]').forEach(x=> x.setAttribute('data-active','false'));
+          r.setAttribute('data-active', String(!act));
+          rfInfo.textContent = `${r.dataset.name||r.dataset.id}: заявок в работе — ${Math.floor(Math.random()*50)+1}`;
+        });
+
+        let scale = 1;
+        const applyZoom = ()=>{ stageG.setAttribute('transform', `translate(0 0) scale(${scale})`); };
+        wrap.querySelector('#rfZoomIn')?.addEventListener('click', ()=>{ scale = Math.min(3, +(scale+0.2).toFixed(2)); applyZoom(); });
+        wrap.querySelector('#rfZoomOut')?.addEventListener('click', ()=>{ scale = Math.max(1, +(scale-0.2).toFixed(2)); applyZoom(); });
+        wrap.querySelector('#rfZoomReset')?.addEventListener('click', ()=>{ scale = 1; applyZoom(); });
+        wrap.querySelector('#rfSearch')?.addEventListener('input', e=>{
+          const q = e.target.value.trim().toLowerCase();
+          $$('#rfStage .region').forEach(r=>{
+            const name = (r.dataset.name || r.dataset.id || '').toLowerCase();
+            r.style.opacity = !q ? '1' : (name.includes(q)?'1':'.25');
+          });
+        });
+
+      }catch(_){
+        rfSkel?.remove();
+        rfInfo.textContent = 'Не удалось загрузить карту. Добавьте файл /assets/rf.svg (регионы с id вида RU-**).';
+        const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        rect.setAttribute('x','5'); rect.setAttribute('y','15'); rect.setAttribute('width','90'); rect.setAttribute('height','60');
+        rect.setAttribute('fill','#e2e8f0'); rect.setAttribute('rx','2');
+        stageG.appendChild(rect);
+      }
+    })();
+
+    const y = document.getElementById('year'); if(y) y.textContent = new Date().getFullYear();
+
+  })();
+  </script>
+
+  <!-- Swiper JS (лениво) -->
+  <script>
+    (function initSwiper(){
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
+      s.onload = () => {
+        // eslint-disable-next-line no-undef
+        new Swiper('.hero-swiper', {
+          loop: true,
+          pagination: { el: '.swiper-pagination', clickable: true },
+          navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+          a11y: { enabled: true, prevSlideMessage: 'Предыдущий слайд', nextSlideMessage: 'Следующий слайд' }
+        });
+        document.documentElement.classList.remove('no-swiper');
+      };
+      document.head.appendChild(s);
+    })();
+  </script>
 </body>
 </html>
