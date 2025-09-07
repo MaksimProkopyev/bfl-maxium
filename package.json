@@ -1,0 +1,26 @@
+{
+  "name": "bfl-maxium",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "live-server site --port=5500 --open=./index.html --watch=site --wait=100",
+    "preview": "python3 -m http.server 5500 --directory site"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaksimProkopyev/bfl-maxium.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MaksimProkopyev/bfl-maxium/issues"
+  },
+  "homepage": "https://github.com/MaksimProkopyev/bfl-maxium#readme",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
